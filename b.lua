@@ -20,7 +20,7 @@ w:Slider("Height",
     {
         precise = false,
         default = 8,
-        min = 8,
+        min = 4,
         max = 150,
     },
 function(v)
