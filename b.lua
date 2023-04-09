@@ -1,10 +1,17 @@
 local times = 1
 local event = game:GetService("ReplicatedStorage").RemoteFunction
-local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/banbuskox/dfhtyxvzexrxgfdzgzfdvfdz/main/jsdnfjdsfdjnsmvkjhlkslzLIB", true))()
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Sigmanic/ROBLOX/main/ModificationWallyUi", true))()
 local w = library:CreateWindow("Auto Stack V3")
-local h = 8
+local h = 5
 local Mouse = game.Players.LocalPlayer:GetMouse()
-w:Section("Stacking")
+local troops = {}
+for i,v in next, game:GetService("ReplicatedStorage").RemoteFunction:InvokeServer("Session", "Search", "Inventory.Troops") do
+    if v.Equipped then
+        table.insert(troops, i)
+    end
+end
+local upgradeTroop = troops[1] 
+w:Section("Stacking - DONT STACK BETWEEN -6 AND 6 OR IT WONT WORK")
 local Toggle = w:Toggle('Stacking Enabled', {flag = "toggle1"})
 w:Slider("Amount",
     {
@@ -19,9 +26,9 @@ end)
 w:Slider("Height",
     {
         precise = false,
-        default = 8,
-        min = 4,
-        max = 150,
+        default = 6,
+        min = -8,
+        max = 120,
     },
 function(v)
 	h = v
@@ -33,6 +40,21 @@ for i,v in pairs(game.Workspace.Towers:GetChildren()) do
         wait()
     end
 end
+end)
+w:Button("Upgrade Troop", function()
+    for i,v in pairs(game.Workspace.Towers:GetChildren()) do
+        if v:WaitForChild("Owner").Value == game.Players.LocalPlayer.UserId and v:WaitForChild("Replicator"):GetAttribute("Type") == upgradeTroop then
+            event:InvokeServer("Troops","Upgrade","Set",{["Troop"] = v})
+            wait()
+        end
+    end
+end)
+w:Dropdown("Set Tower", {
+    location = _G;
+    flag = "troops";
+    list = troops;
+}, function(value)
+    upgradeTroop = value
 end)
 w:Section('DANGER ZONE')
 w:Button('Sell All', function()
